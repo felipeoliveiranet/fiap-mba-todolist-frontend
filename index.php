@@ -1,25 +1,4 @@
-<?php header('Content-Type: text/html; charset=UTF-8');
-
-	// Recebido por SQL:
-	$todoListItens = array(
-        array("id"=>"1", "description"=>"Comprar pão"),
-        array("id"=>"2", "description"=>"Comprar leite"),
-        array("id"=>"3", "description"=>"Comprar ovos"),
-		array("id"=>"4", "description"=>"Comprar manteiga"),
-		array("id"=>"5", "description"=>"Comprar um Aston Martin")
-	);
-	
-	$html_todoListItens = '';
-	$html_comma_optional = '';
-	foreach ($todoListItens as $todoListItem) {
-		$id = $todoListItem["id"];
-		$description = $todoListItem["description"];
-		if ($html_todoListItens == '') { $html_comma_optional = ''; }
-		else { $html_comma_optional = ','; }
-		$html_todoListItens = $html_todoListItens . $html_comma_optional . '{id: "'. $todoListItem["id"] .'", description: "'. $todoListItem["description"] .'"}';
-	}
-
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 	<title>Todo List</title>
@@ -91,89 +70,137 @@
 
 	</main>
 	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 	<script>
 
 		var html = "";
-		var todoListItens = [<?php echo $html_todoListItens;?>];
+		var endpoint = "http://localhost/todolist/tasks/"
 
 		function createTableViewCellWithItemWith(id, description) {
 			var tableViewCellWithItem  = '<div class="tableViewCell" id="tableViewCellDorItem_'+id+'">';
-				tableViewCellWithItem += '<input class="input" id="input_'+id+'" type="text" placeholder="Novo item..." value="'+description+'" oninput="updateItem('+id+')">';
-				tableViewCellWithItem += '<div class="deleteButton" onclick="deleteItem('+id+')"></div>';
+				tableViewCellWithItem += '<input class="input" id="input_'+id+'" type="text" placeholder="Novo item..." value="'+description+'" oninput="updateItem('+id+', this)">';
+				tableViewCellWithItem += '<div class="deleteButton" onclick="onDelete('+id+', this)"></div>';
 				tableViewCellWithItem += '<div class="divisor"></div>';
 				tableViewCellWithItem += '</div>';
 			return tableViewCellWithItem
 		}
 	
-		function updateHTML(todoListItem) {
-			html = html + createTableViewCellWithItemWith(todoListItem.id, todoListItem.description);
+		function updateHTML(id, title) {
+			html = html + createTableViewCellWithItemWith(id, title);
 		};
 	
 		function updateTableViewWithHTML() {
 			document.getElementById("tableView").innerHTML = html;
 		};
 		
-		/*
-		function submmitToSQLPage(id, description, sqlCommand) {
-			document.getElementById("form_id").value = id;
-			document.getElementById("form_description").value = description;
-			document.getElementById("form_sqlCommand").value = sqlCommand;
-			document.getElementById("form").submit();
-			
-			window.location.reload();
-			
-		};
-		*/
+		$(document).ready(function() {
 
-		function ajax(id, description, sqlCommand) {
+			$('#inputWithNewItem').focus();
 
-			var xmlhttp = new XMLHttpRequest();
-			xmlhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					document.getElementById("tableView").innerHTML = this.responseText;
-				}
-			};
-			
-			xmlhttp.open("POST", "sqlProcessing.php", true);
-			xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xmlhttp.send("id=id&description=description&sqlCommand=sqlCommand");
-			
+			$("#inputWithNewItem").on('keypress',function(e) {
+				if(e.which == 13)
+					$("#plusButton").trigger('click');
+			});
+
+			$.ajax({
+					type: "GET",
+					url: endpoint,
+					success: function(data) {
+
+						for(i=0; i < data.length; i++) {
+
+							item = data[i];
+
+							$("#tableView").after(createTableViewCellWithItemWith(item['id_task']['N'], item['title']['S']));
+						}
+					},
+					error: function() {
+						alert('Error occured');
+					},
+					dataType: 'json'
+				});
+
+			$("#plusButton").click(function() {
+
+				field = $('#inputWithNewItem');
+				title = field.val();
+
+				$.ajax({
+					type: "POST",
+					url: endpoint,
+					data: {'title': title },
+					success: function(data) {
+
+						item = createTableViewCellWithItemWith(data['id_task']['N'], data['title']['S']);
+						$("#tableView").append(item);
+
+						field.val('');
+						field.focus();
+
+					},
+					error: function() {
+						alert('Error occured');
+					},
+					dataType: 'json'
+				});
+			});
+		});
+
+		function onDelete(id, bt) {
+
+			$(bt).removeAttr('onclick');
+
+			$.ajax({
+				type: "DELETE",
+				url: endpoint + id,
+				success: function(data) {
+
+					$("#tableViewCellDorItem_" + id).remove();
+					
+				},
+				error: function() {
+					alert('Error occured');
+				},
+				dataType: 'json'
+			});
 		}
 
-		// ------------------------------------------------------
+		var updateTimeout;
+		var updateTask;
 
-		// SELECT - Load TableView with data from DB:
-		todoListItens.forEach(updateHTML);
-		updateTableViewWithHTML();
-		
-		// UPDATE
-		function updateItem(id) {
-			var description = document.getElementById("input_"+id).value;
-			alert("You wrote: " + description);
-		}
-	
-		// DELETE - Delete Item
-		function deleteItem(id) {
-		document.getElementById("tableViewCellDorItem_"+id).remove();
-		}
+		function updateItem(id, obj) {
 
-		// INSERT INTO - Insert new item to TableView:
-		document.getElementById("plusButton").onclick = function () {
-			var id = "";
-			var description = document.getElementById("inputWithNewItem").value;
-			var sqlCommand = "insert";
-			if (description == "") {
-				alert("Você deve digitar algo...");
-				document.getElementById("inputWithNewItem").focus();
+			clearTimeout(updateTimeout);
+			updateTimeout = setTimeout(updateStop, 3000);
+
+			updateTask = {
+
+				'id': id,
+				'bt': obj
 			}
-			else {
-				document.getElementById("inputWithNewItem").value = ""
-				ajax(id, description, sqlCommand);
-			}
-			return true;
-		};
-		
+
+		}
+		function updateStop() {
+
+			
+			id = updateTask['id'];
+			title = $(updateTask['bt']).val();
+
+			$.ajax({
+				type: "PATCH",
+				url: endpoint + id,
+				data: {'title': title},
+				success: function(data) {
+
+					updateTask = {};
+				},
+				error: function() {
+					alert('Error occured');
+				},
+				dataType: 'json'
+			});
+		}
 	</script>
-
 </body>
 </html>
