@@ -54,12 +54,6 @@
 	<main>
 	<h1>Todo List</h1>
 
-	    <form id="form" action="sqlProcessing.php" method="post">
-			<input type="hidden" id="form_id"          name="id"          value="">
-		    <input type="hidden" id="form_description" name="description" value="">
-		    <input type="hidden" id="form_sqlCommand"  name="sqlCommand"  value="">
-		</form>
-	
 		<div id="tableView"></div>
 
 		<div class="tableViewCell">
@@ -75,7 +69,7 @@
 	<script>
 
 		var html = "";
-		var endpoint = "http://localhost/todolist/tasks/"
+		var endpoint = "http://fiapmbatodolist-env.eba-g72nesde.us-east-1.elasticbeanstalk.com/tasks/"
 
 		function createTableViewCellWithItemWith(id, description) {
 			var tableViewCellWithItem  = '<div class="tableViewCell" id="tableViewCellDorItem_'+id+'">';
