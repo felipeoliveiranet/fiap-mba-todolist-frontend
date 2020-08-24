@@ -50,7 +50,14 @@
 			
 				if(e.which == 13)
 	            	$("#plusButton").trigger('click');
-    		});
+			});
+			
+			function addItemClick() {
+
+				$("#plusButton").click(function() { addItem(this); });
+			}
+
+			addItemClick();
 		});
 	</script>
 </body>

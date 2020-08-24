@@ -6,6 +6,7 @@ function getItems() {
     $.ajax({
         type: "GET",
         url: endpoint,
+        crossDomain: true,
         success: function(data) {
 
             hideAlertMessage();
@@ -31,78 +32,40 @@ function getItems() {
     });
 }
 
-    function addItemClick() {
 
-        $("#plusButton").click(function() { addItem(this); });
-    }
-        
-    addItemClick();
+function addItem(obj) {
 
-    function addItem(obj) {
+    field = $('#inputWithNewItem');
+    title = field.val();
 
-        field = $('#inputWithNewItem');
-        title = field.val();
-
-        if(title == "") {
-            showAlertMessage("Prencha o titulo da tarefa!");
-            return false;
-        }
-
-        $(this).unbind('click');
-
-        $.ajax({
-            type: "POST",
-            url: endpoint,
-            data: {'title': title },
-            success: function(data) {
-
-                hideAlertMessage();
-
-                item = createTableViewCellWithItemWith(data['id_task']['S'], data['title']['S']);
-                $("#tableView").append(item);
-
-                field.val('');
-                field.focus();
-            },
-            error: function() {
-                showErrorMessage();
-            },
-            done: function() {
-
-                addItemClick();
-            },
-            dataType: 'json'
-        });
+    if(title == "") {
+        showAlertMessage("Prencha o titulo da tarefa!");
+        return false;
     }
 
-function onDelete(id, bt) {
-
-    $(bt).removeAttr('onclick');
+    $(this).unbind('click');
 
     $.ajax({
-        type: "DELETE",
+        type: "POST",
         url: endpoint,
-        data: {'id': id },
+        data: {'title': title },
+        crossDomain: true,
         success: function(data) {
 
             hideAlertMessage();
 
-            $("#tableViewCellDorItem_" + id).remove();
-            
+            item = createTableViewCellWithItemWith(data['id_task']['S'], data['title']['S']);
+            $("#tableView").append(item);
+
+            field.val('');
+            field.focus();
         },
-        error: function(xhr, status, error) {
-
+        error: function() {
             showErrorMessage();
+        },
+        done: function() {
 
-            console.log('REQUEST DELETE ERROR:');
-            console.log(xhr);
-            console.log(xhr.responseText);
-            console.log(status);
-
-            err = eval("(" + xhr.responseText + ")");
-
-            console.log('REQUEST DELETE ERROR:');
-            console.log(err.Message);
+            addItemClick();
         },
         dataType: 'json'
     });
@@ -132,19 +95,45 @@ function updateItem() {
     if(title == "") {
     
         showAlertMessage("Prencha o titulo da tarefa!");
+        
         return false;
     }
 
     $.ajax({
         type: "PATCH",
-        url: endpoint + id,
-        data: {'title': title},
+        url: endpoint,
+        data: {'id_task': id},
+        crossDomain: true,
         success: function(data) {
 
             hideAlertMessage();
             updateTask = {};
         },
         error: function() {
+            showErrorMessage();
+        },
+        dataType: 'json'
+    });
+}
+
+function deleteItem(id, bt) {
+
+    $(bt).removeAttr('onclick');
+
+    $.ajax({
+        type: "DELETE",
+        url: endpoint,
+        data: {'id_task': id},
+        crossDomain: true,
+        success: function(data) {
+
+            hideAlertMessage();
+
+            $("#tableViewCellDorItem_" + id).remove();
+            
+        },
+        error: function(xhr, status, error) {
+
             showErrorMessage();
         },
         dataType: 'json'

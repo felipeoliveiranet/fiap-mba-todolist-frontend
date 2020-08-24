@@ -15,6 +15,8 @@ function hideLoading() {
 
 function showAlertMessage(msg) {
 
+    hideLoading();
+    
     $(".alert").show();
     $(".alert .text").html(msg);
 
