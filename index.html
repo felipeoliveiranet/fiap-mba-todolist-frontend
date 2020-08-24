@@ -54,6 +54,7 @@
 	<main>
 	<h1>Todo List</h1>
 
+		<div id="tableViewLoading">Loading...</div>
 		<div id="tableView"></div>
 
 		<div class="tableViewCell">
@@ -107,6 +108,9 @@
 					$("#plusButton").trigger('click');
 			});
 
+			$("#tableView").hide();
+			$("#tableViewLoading").show();
+
 			$.ajax({
 					type: "GET",
 					url: endpoint,
@@ -120,6 +124,9 @@
 
 							$("#tableView").after(createTableViewCellWithItemWith(item['id_task']['S'], item['title']['S']));
 						}
+
+						$("#tableViewLoading").hide();
+						$("#tableView").show();
 					},
 					error: function() {
 						errorHandler();
