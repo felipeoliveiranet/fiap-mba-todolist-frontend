@@ -118,7 +118,7 @@
 
 							item = data[i];
 
-							$("#tableView").after(createTableViewCellWithItemWith(item['id_task']['N'], item['title']['S']));
+							$("#tableView").after(createTableViewCellWithItemWith(item['id_task'][''], item['title']['S']));
 						}
 					},
 					error: function() {
@@ -135,12 +135,12 @@
 				$.ajax({
 					type: "POST",
 					url: endpoint,
-					data: {'title': title },
+					data: JSON.stringify({'title': title }),
 					success: function(data) {
 
 						errorCleaner();
 
-						item = createTableViewCellWithItemWith(data['id_task']['N'], data['title']['S']);
+						item = createTableViewCellWithItemWith(data['id_task']['S'], data['title']['S']);
 						$("#tableView").append(item);
 
 						field.val('');
@@ -200,7 +200,7 @@
 			$.ajax({
 				type: "PATCH",
 				url: endpoint + id,
-				data: {'title': title},
+				data: JSON.stringify({'title': title}),
 				success: function(data) {
 
 					errorCleaner();
