@@ -194,7 +194,7 @@
 		function updateItem(id, obj) {
 
 			clearTimeout(updateTimeout);
-			updateTimeout = setTimeout(updateStop, 3000);
+			updateTimeout = setTimeout(updateStop, 1500);
 
 			updateTask = {
 
@@ -212,7 +212,7 @@
 					alert("Prencha o titulo da tarefa!");
 					return false;
 				}
-				
+
 			$.ajax({
 				type: "PATCH",
 				url: endpoint + id,
