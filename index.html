@@ -135,7 +135,7 @@
 				$.ajax({
 					type: "POST",
 					url: endpoint,
-					data: JSON.stringify({'title': title }),
+					data: {'title': title },
 					success: function(data) {
 
 						errorCleaner();
@@ -200,7 +200,7 @@
 			$.ajax({
 				type: "PATCH",
 				url: endpoint + id,
-				data: JSON.stringify({'title': title}),
+				data: {'title': title},
 				success: function(data) {
 
 					errorCleaner();
