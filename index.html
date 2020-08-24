@@ -69,7 +69,7 @@
 	<script>
 
 		var html = "";
-		var endpoint = "http://fiapmbatodolist-env.eba-g72nesde.us-east-1.elasticbeanstalk.com/tasks/"
+		var endpoint = "http://todolink-backend-env.eba-hdhbezsi.us-east-1.elasticbeanstalk.com/tasks/"
 
 		function createTableViewCellWithItemWith(id, description) {
 			var tableViewCellWithItem  = '<div class="tableViewCell" id="tableViewCellDorItem_'+id+'">';
@@ -88,6 +88,16 @@
 			document.getElementById("tableView").innerHTML = html;
 		};
 		
+		function errorCleaner() {
+
+			$('#erroMsg').remove();
+		}
+		function errorHandler() {
+
+			errorCleaner();
+			$('main').append('<div id="erroMsg"><p>Erro ao executar o backend!</p></div>');
+		}
+
 		$(document).ready(function() {
 
 			$('#inputWithNewItem').focus();
@@ -102,6 +112,8 @@
 					url: endpoint,
 					success: function(data) {
 
+						errorCleaner();
+
 						for(i=0; i < data.length; i++) {
 
 							item = data[i];
@@ -110,7 +122,7 @@
 						}
 					},
 					error: function() {
-						alert('Error occured');
+						errorHandler();
 					},
 					dataType: 'json'
 				});
@@ -126,6 +138,8 @@
 					data: {'title': title },
 					success: function(data) {
 
+						errorCleaner();
+
 						item = createTableViewCellWithItemWith(data['id_task']['N'], data['title']['S']);
 						$("#tableView").append(item);
 
@@ -134,7 +148,7 @@
 
 					},
 					error: function() {
-						alert('Error occured');
+						errorHandler();
 					},
 					dataType: 'json'
 				});
@@ -149,6 +163,8 @@
 				type: "DELETE",
 				url: endpoint + id,
 				success: function(data) {
+
+					errorCleaner();
 
 					$("#tableViewCellDorItem_" + id).remove();
 					
@@ -187,10 +203,11 @@
 				data: {'title': title},
 				success: function(data) {
 
+					errorCleaner();
 					updateTask = {};
 				},
 				error: function() {
-					alert('Error occured');
+					errorHandler();
 				},
 				dataType: 'json'
 			});
