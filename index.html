@@ -74,7 +74,7 @@
 		function createTableViewCellWithItemWith(id, description) {
 			var tableViewCellWithItem  = '<div class="tableViewCell" id="tableViewCellDorItem_'+id+'">';
 				tableViewCellWithItem += '<input class="input" id="input_'+id+'" type="text" placeholder="Novo item..." value="'+description+'" oninput="updateItem('+id+', this)">';
-				tableViewCellWithItem += '<div class="deleteButton" onclick="onDelete(\''+id+'\', this)"></div>';
+				tableViewCellWithItem += "<div class=\"deleteButton\" onclick=\"onDelete('" + id + "', this)\"></div>";
 				tableViewCellWithItem += '<div class="divisor"></div>';
 				tableViewCellWithItem += '</div>';
 			return tableViewCellWithItem
