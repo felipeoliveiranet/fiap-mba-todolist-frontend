@@ -6,7 +6,6 @@ function getItems() {
     $.ajax({
         type: "GET",
         url: endpoint,
-        crossDomain: true,
         success: function(data) {
 
             hideAlertMessage();
@@ -49,7 +48,6 @@ function addItem(obj) {
         type: "POST",
         url: endpoint,
         data: {'title': title },
-        crossDomain: true,
         success: function(data) {
 
             hideAlertMessage();
@@ -95,15 +93,14 @@ function updateItem() {
     if(title == "") {
     
         showAlertMessage("Prencha o titulo da tarefa!");
-        
+
         return false;
     }
 
     $.ajax({
         type: "PATCH",
-        url: endpoint,
+        url: endpoint + id,
         data: {'id_task': id},
-        crossDomain: true,
         success: function(data) {
 
             hideAlertMessage();
@@ -121,10 +118,9 @@ function deleteItem(id, bt) {
     $(bt).removeAttr('onclick');
 
     $.ajax({
-        type: "DELETE",
-        url: endpoint,
+        type: "delete",
+        url: endpoint + id,
         data: {'id_task': id},
-        crossDomain: true,
         success: function(data) {
 
             hideAlertMessage();
@@ -136,6 +132,7 @@ function deleteItem(id, bt) {
 
             showErrorMessage();
         },
+        contentType: "application/json",
         dataType: 'json'
     });
 }
