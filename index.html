@@ -139,6 +139,11 @@
 				field = $('#inputWithNewItem');
 				title = field.val();
 
+				if(title == "") {
+					alert("Prencha o titulo da tarefa!");
+					return false;
+				}
+
 				$.ajax({
 					type: "POST",
 					url: endpoint,
@@ -200,10 +205,14 @@
 		}
 		function updateStop() {
 
-			
 			id = updateTask['id'];
 			title = $(updateTask['bt']).val();
 
+			if(title == "") {
+					alert("Prencha o titulo da tarefa!");
+					return false;
+				}
+				
 			$.ajax({
 				type: "PATCH",
 				url: endpoint + id,
