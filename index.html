@@ -44,24 +44,5 @@
 	</main>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-	<script src="utils.js"></script>
-	<script src="html.js"></script>
-	<script src="ajax.js"></script>
-
-	<script>
-		$(document).ready(function() {
-
-			showLoading();
-			
-			getItems();
-			
-    		$("#inputWithNewItem").on('keypress',function(e) {
-			
-				if(e.which == 13)
-	            	$("#plusButton").trigger('click');
-    		});
-		});
-	</script>
 </body>
 </html>
