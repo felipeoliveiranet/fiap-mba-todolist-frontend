@@ -82,6 +82,7 @@ function onDelete(id, bt) {
     $.ajax({
         type: "DELETE",
         url: endpoint + id,
+        data: {'id': id },
         success: function(data) {
 
             hideAlertMessage();
@@ -89,8 +90,19 @@ function onDelete(id, bt) {
             $("#tableViewCellDorItem_" + id).remove();
             
         },
-        error: function() {
+        error: function(xhr, status, error) {
+
             showErrorMessage();
+
+            console.log('REQUEST DELETE ERROR:');
+            console.log(xhr);
+            console.log(xhr.responseText);
+            console.log(status);
+
+            err = eval("(" + xhr.responseText + ")");
+
+            console.log('REQUEST DELETE ERROR:');
+            console.log(err.Message);
         },
         dataType: 'json'
     });
