@@ -81,7 +81,7 @@ function onDelete(id, bt) {
 
     $.ajax({
         type: "DELETE",
-        url: endpoint + id,
+        url: endpoint,
         data: {'id': id },
         success: function(data) {
 
