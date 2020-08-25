@@ -121,8 +121,8 @@ function deleteItem(id, bt) {
     $(bt).removeAttr('onclick');
 
     $.ajax({
-        type: "POST",
-        url: endpoint + "DELETE",
+        type: "DELETE",
+        url: endpoint + id,
         data: {'id_task': id},
         success: function(data) {
 
@@ -131,11 +131,10 @@ function deleteItem(id, bt) {
             $("#tableViewCellDorItem_" + id).remove();
             
         },
-        error: function(xhr, status, error) {
+        error: function() {
 
             showErrorMessage();
         },
-        contentType: "application/json",
         dataType: 'json'
     });
 }
