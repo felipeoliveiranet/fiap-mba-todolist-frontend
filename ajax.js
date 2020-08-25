@@ -100,7 +100,10 @@ function updateItem() {
     $.ajax({
         type: "PATCH",
         url: endpoint + id,
-        data: {'id_task': id},
+        data: {
+            'id_task': id,
+            'title': title
+        },
         success: function(data) {
 
             hideAlertMessage();
