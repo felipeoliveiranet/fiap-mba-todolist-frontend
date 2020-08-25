@@ -121,7 +121,7 @@ function deleteItem(id, bt) {
     $(bt).removeAttr('onclick');
 
     $.ajax({
-        type: "DELETE",
+        type: "POST",
         url: endpoint,
         data: {'id_task': id},
         success: function(data) {
