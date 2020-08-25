@@ -122,7 +122,7 @@ function deleteItem(id, bt) {
 
     $.ajax({
         type: "POST",
-        url: endpoint,
+        url: endpoint + "DELETE",
         data: {'id_task': id},
         success: function(data) {
 
